@@ -29,6 +29,19 @@
                 <x-nav-link href="/autores" :active="request()->is('autores')">Autores</x-nav-link>
                 <x-nav-link href="/editoras" :active="request()->is('editoras')">Editoras</x-nav-link>
             </div>
+            <div class="flex items-center space-x-2">
+    @guest
+        <x-nav-link href="/login">Login</x-nav-link>
+    @endguest
+
+    @auth
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="text-white hover:underline">Logout</button>
+        </form>
+    @endauth
+</div>
+
         </div>
     </nav>
 
