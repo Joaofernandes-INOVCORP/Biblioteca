@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LivroController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -11,6 +12,8 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    
+    Route::resource('livros', LivroController::class);
 
     Route::get('/dashboard', function () {
         return view('dashboard');
