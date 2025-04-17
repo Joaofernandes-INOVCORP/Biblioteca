@@ -19,31 +19,42 @@
     @livewireStyles
 </head>
 
-<body>
-    <nav class="bg-gray-800">
-        <div class="flex items-center h-16 px-6 justify-between">
-            <div class="flex items-center space-x-6">
-                <img class="size-8" src="https://laracasts.com/images/logo/logo-triangle.svg" alt="Logo">
-                <x-nav-link href="/" :active="request()->is('/')">Home</x-nav-link>
-                <x-nav-link href="/livros" :active="request()->is('livros')">Livros</x-nav-link>
-                <x-nav-link href="/autores" :active="request()->is('autores')">Autores</x-nav-link>
-                <x-nav-link href="/editoras" :active="request()->is('editoras')">Editoras</x-nav-link>
-            </div>
-            <div class="flex items-center space-x-2">
-    @guest
-        <x-nav-link href="/login">Login</x-nav-link>
-    @endguest
+<body class="min-h-screen bg-orange-100">
+<nav class="bg-orange-400">
+  <div class="flex items-center h-16 px-6 justify-between">
+    <div class="flex items-center space-x-10">
+      <img class="w-8 h-8 mr-6"  src="{{ asset('images/logo.png') }}" alt="My Logo">
+      <x-nav-link href="/" :active="request()->is('/')">
+        Home
+      </x-nav-link>
+      <x-nav-link href="/livros" :active="request()->is('livros')">
+        Livros
+      </x-nav-link>
+      <x-nav-link href="/autores" :active="request()->is('autores')">
+        Autores
+      </x-nav-link>
+      <x-nav-link href="/editoras" :active="request()->is('editoras')">
+        Editoras
+      </x-nav-link>
+    </div>
 
-    @auth
+    <div class="flex items-center space-x-2">
+      @guest
+        <x-nav-link href="/login" class="btn btn-primary">
+          Login
+        </x-nav-link>
+      @endguest
+
+      @auth
         <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="text-white hover:underline">Logout</button>
+          @csrf
+          <button type="submit" class="btn btn-error btn-sm">Logout</button>
         </form>
-    @endauth
-</div>
+      @endauth
+    </div>
+  </div>
+</nav>
 
-        </div>
-    </nav>
 
     <div class="font-sans text-gray-900 dark:text-gray-100 antialiased">
         {{ $slot }}
