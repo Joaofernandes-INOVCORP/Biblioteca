@@ -12,7 +12,7 @@ class Editora extends Model
 
     public function livros()
     {
-        $this->hasMany(Livro::class);
+        return $this->hasMany(Livro::class);
     }
     
 }

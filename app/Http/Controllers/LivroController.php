@@ -3,60 +3,61 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Livro;
 
 class LivroController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        return view('livros');
+
+        $query = Livro::with('autores', 'editoras');
+
+        if (request("search")) {
+            $query->where("nome", "LIKE", "%" . request("search") . "%");
+        }
+
+        if (request("price_min")) {
+            $query->where("preco", ">", request("price_min"));
+        }
+
+        if (request("price_max")) {
+            $query->where("preco", "<", request("price_max"));
+        }
+
+        $livros = $query->orderBy('preco', strtolower(request("order") ?? "asc") == "asc"? "asc": "desc")->paginate(8);
+
+        return view('livros.index', compact('livros'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function show(Livro $livro)
+    {
+        $livro->load(['autores', 'editoras']);
+
+        return view('livros.show', compact('livro'));
+    }
+
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

@@ -17,6 +17,6 @@ class Livro extends Model
 
     public function editoras()
     {
-        return $this->belongsTo(Editora::class);    
+        return $this->belongsTo(Editora::class, 'editora_id');    
     }
 }
