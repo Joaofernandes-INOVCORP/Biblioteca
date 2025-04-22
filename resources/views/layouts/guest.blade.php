@@ -37,6 +37,14 @@
         <x-nav-link href="/editoras" :active="request()->is('editoras')">
           Editoras
         </x-nav-link>
+
+          @auth
+        
+        <x-nav-link href="/requisicoes" :active="request()->is('requisicoes')">
+          Requisições
+        </x-nav-link>
+
+          @endauth
         @endif
       </div>
 

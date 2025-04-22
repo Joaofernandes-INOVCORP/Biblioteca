@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Requisicao; 
 
 class Livro extends Model
 {
@@ -18,5 +19,9 @@ class Livro extends Model
     public function editoras()
     {
         return $this->belongsTo(Editora::class, 'editora_id');    
+    }
+
+    public function requisicoes() {
+        return $this->hasMany(Requisicao::class);
     }
 }

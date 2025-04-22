@@ -10,55 +10,47 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
+use App\Models\Requisicao;
+
 class User extends Authenticatable
 {
-    use HasApiTokens;
+    //NÃO REMOVER NADA DO Q ESTA AQUI OU VAI DAR MERDA QwQ
+    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable;
 
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasProfilePhoto, Notifiable, TwoFactorAuthenticatable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
     ];
-
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array<int, string>
-     */
     protected $appends = [
         'profile_photo_url',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function requisicoes(){
+        return $this->hasMany(Requisicao::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+    public function isCidadao(): bool
+    {
+        return $this->role === 'cidadao';
     }
 }
