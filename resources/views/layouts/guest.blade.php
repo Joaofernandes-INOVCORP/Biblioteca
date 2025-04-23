@@ -23,88 +23,95 @@
   <nav class="bg-orange-400">
     <div class="flex items-center h-16 px-6 justify-between">
       <div class="flex items-center space-x-10">
-        <img class="w-8 h-8 mr-6" src="{{ asset('images/logo.png') }}" alt="My Logo">
-        @if (!(request()->is("user/confirm-password") || request()->is("two-factor-challenge") || request()->is("forgot-password")))
-        <x-nav-link href="/" :active="request()->is('/')">
-          Home
-        </x-nav-link>
-        <x-nav-link href="/livros" :active="request()->is('livros')">
-          Livros
-        </x-nav-link>
-        <x-nav-link href="/autores" :active="request()->is('autores')">
-          Autores
-        </x-nav-link>
-        <x-nav-link href="/editoras" :active="request()->is('editoras')">
-          Editoras
-        </x-nav-link>
+          <img class="w-8 h-8 mr-6" src="{{ asset('images/logo.png') }}" alt="My Logo">
 
-          @auth
-        
-        <x-nav-link href="/requisicoes" :active="request()->is('requisicoes')">
-          Requisições
-        </x-nav-link>
+          @if (!(request()->is("user/confirm-password") || request()->is("two-factor-challenge") || request()->is("forgot-password")))
 
-          @endauth
-        @endif
+            <x-nav-link href="/" :active="request()->is('/')">
+              Home
+            </x-nav-link>
+            <x-nav-link href="/livros" :active="request()->is('livros')">
+              Livros
+            </x-nav-link>
+            <x-nav-link href="/autores" :active="request()->is('autores')">
+              Autores
+            </x-nav-link>
+            <x-nav-link href="/editoras" :active="request()->is('editoras')">
+              Editoras
+            </x-nav-link>
+
+            @auth
+              <x-nav-link href="/requisicoes" :active="request()->is('requisicoes')">
+              Requisições
+              </x-nav-link>
+            @endauth  
+
+          @endif
       </div>
 
       @if (!(request()->is("user/confirm-password") || request()->is("two-factor-challenge")))
       <div class="flex items-center space-x-2">
-        @guest
-        <x-nav-link href="/login" class="btn btn-primary">
-          Login
-        </x-nav-link>
-        @endguest
+      @guest
+      <x-nav-link href="/login" class="btn btn-primary">
+      Login
+      </x-nav-link>
 
-        @auth
-        <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-ghost rounded-field">{{ auth()->user()->name }}</div>
-          <ul tabindex="0" class="dropdown-content bg-orange-400 rounded-box z-1 mt-4 p-2 shadow-sm flex flex-col gap-3">
-            <li>
-              <form method="post" action="/user/two-factor-authentication">
-                @csrf
+      <x-nav-link href="/register" class="btn btn-primary">
+      Registar
+      </x-nav-link>
+    @endguest
 
-                @if (auth()->user()->two_factor_secret)
+      @auth
+      <div class="dropdown dropdown-end">
+      <div tabindex="0" role="button" class="btn btn-ghost rounded-field">{{ auth()->user()->name }}</div>
+      <ul tabindex="0"
+      class="dropdown-content bg-orange-400 rounded-box z-1 mt-4 p-2 shadow-sm flex flex-col gap-3">
+      <li>
+        <form method="post" action="/user/two-factor-authentication">
+        @csrf
 
-                @method("DELETE")
+        @if (auth()->user()->two_factor_secret)
 
-                <button type="submit" class="btn btn-error">Disable 2FA</button>
+      @method("DELETE")
 
-                @else
+      <button type="submit" class="btn btn-error">Disable 2FA</button>
 
-                <button type="submit" class="btn btn-primary">Enable 2FA</button>
+    @else
 
-                @endif
+    <button type="submit" class="btn btn-primary">Enable 2FA</button>
 
-              </form>
-            </li>
-            @if (auth()->user()->two_factor_secret)
-            <li>
-              {!! auth()->user()->twoFactorQrCodeSvg() !!}
-            </li>
-            <li>
-              <h6>Recovery code:</h6>
-              @php
-              $codes = json_decode(decrypt(auth()->user()->two_factor_recovery_codes))
-              @endphp
-                <div class="bg-base-200 p-2 rounded-field w-fit text-xs font-bold font-mono">{{ $codes[array_rand($codes)] }}</div>
-            </li>
-            @endif
-            <li>
-              <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="btn btn-error">Logout</button>
-              </form>
-            </li>
-          </ul>
-        </div>
+  @endif
 
-
-
-
-        @endauth
+        </form>
+      </li>
+      @if (auth()->user()->two_factor_secret)
+      <li>
+      {!! auth()->user()->twoFactorQrCodeSvg() !!}
+      </li>
+      <li>
+      <h6>Recovery code:</h6>
+      @php
+      $codes = json_decode(decrypt(auth()->user()->two_factor_recovery_codes))
+    @endphp
+      <div class="bg-base-200 p-2 rounded-field w-fit text-xs font-bold font-mono">
+      {{ $codes[array_rand($codes)] }}</div>
+      </li>
+    @endif
+      <li>
+        <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="btn btn-error">Logout</button>
+        </form>
+      </li>
+      </ul>
       </div>
-      @endif
+
+
+
+
+    @endauth
+      </div>
+    @endif
     </div>
   </nav>
 

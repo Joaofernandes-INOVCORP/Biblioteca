@@ -17,7 +17,7 @@ Route::middleware([
      config('jetstream.auth_session'),
      'verified',
 ])->group(function () {
-     /*Route::resource('livros', LivroController::class) // só admins podem editar livros pelo q entendi
+     /*Route::resource('livros', LivroController::class) // só admins podem editar livros
           ->except(['index', 'show']);*/
 
      Route::resource('editoras', EditoraController::class)
@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
           ->only(['index', 'store', 'show', 'update']);
 
      // Livros só admin
-     Route::middleware(IsAdmin::class) //<- forma correta, o ChatGPT estava a usar uma forma antiga q já n se usa
+     Route::middleware(IsAdmin::class)
           ->resource('livros', LivroController::class)
           ->except(['index', 'show']);
 });
@@ -47,3 +47,4 @@ Route::resource('autores', AutorController::class)
 
 Route::resource('editoras', EditoraController::class)
      ->only(['index', 'show']);
+     
