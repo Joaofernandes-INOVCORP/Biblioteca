@@ -6,6 +6,7 @@ use App\Mail\NewRequisitionAlert;
 use App\Mail\RequisicaoConfirmada;
 use App\Models\Livro;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Requisicao;
 use Illuminate\Support\Facades\Auth;
@@ -31,21 +32,13 @@ class RequisicaoController extends Controller
         return view('requisicoes.index', compact('reqs', 'ativas', 'ult30dias', 'entreguesHoje'));
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view("requisicoes.create");
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // validação
         $data = $request->validate([
             'livro_id' => 'required|exists:livros,id',
             'foto_cidadao' => 'required|image|max:2048',
@@ -61,7 +54,6 @@ class RequisicaoController extends Controller
             return back()->withErrors('Limite de 3 requisições ativas');
         }
 
-        // Gerar número sequencial
         $proximoId = (Requisicao::max('id') ?? 0) + 1;
         $numero = 'REQ-' . str_pad($proximoId, 4, '0', STR_PAD_LEFT);
 
@@ -86,47 +78,40 @@ class RequisicaoController extends Controller
         return redirect()->route('requisicoes.show', $requisicao);
     }
 
-
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $requisicao = Requisicao::with(["livro", "user"])->find($id);
+
+        return view("requisicoes.show", compact("requisicao"));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Requisicao $requisicao)
+    public function update(Request $request, string $id)
     {
         abort_if(!auth()->user()->isAdmin(), 403);
 
-        $request->validate([
-            'data_real_fim' => 'required|date|after_or_equal:data_inicio',
+        $data = $request->validate([
+            'action' => 'required|in:finish,extend',
         ]);
 
-        $requisicao->update([
-            'data_real_fim' => $request->data_real_fim,
-            'status' => 'concluida',
-        ]);
+        $requisicao = Requisicao::find($id);
+
+        if($data["action"] === "finish"){
+            $requisicao->data_real_fim = now()->toDateString();
+            $requisicao->status = "concluida";
+        }else{
+            $requisicao->data_prevista_fim = Carbon::createFromFormat('Y-m-d', $requisicao->data_prevista_fim)->addDays(5)->toDateString();
+        }
+        
+        $requisicao->save();
 
         return back();
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

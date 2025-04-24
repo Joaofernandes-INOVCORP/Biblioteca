@@ -20,10 +20,12 @@
 </head>
 
 <body class="min-h-screen bg-orange-100">
-  <nav class="bg-orange-400">
-    <div class="flex items-center h-16 px-6 justify-between">
+  <nav class="bg-orange-900">
+    <div class="flex items-center px-6 justify-between">
       <div class="flex items-center space-x-10">
-          <img class="w-8 h-8 mr-6" src="{{ asset('images/logo.png') }}" alt="My Logo">
+          <div class="p-3 rounded-full bg-amber-100 flex items-center justify-items-center m-3">
+            <img class="w-16 h-16" src="{{ asset('images/logo.png') }}" alt="My Logo">
+          </div>
 
           @if (!(request()->is("user/confirm-password") || request()->is("two-factor-challenge") || request()->is("forgot-password")))
 
