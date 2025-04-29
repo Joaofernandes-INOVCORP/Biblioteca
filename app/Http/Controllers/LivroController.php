@@ -6,6 +6,10 @@ use App\Models\Editora;
 use Illuminate\Http\Request;
 use App\Models\Livro;
 
+use App\Exports\LivrosExport;
+use Maatwebsite\Excel\Excel as ExcelExcel;
+use Maatwebsite\Excel\Facades\Excel;
+
 class LivroController extends Controller
 {
 
@@ -87,5 +91,10 @@ class LivroController extends Controller
         Livro::find($id)->delete();
 
         return redirect()->route('livros.index');
+    }
+
+    public function export()
+    {
+        return Excel::download(new LivrosExport, 'livros.csv');
     }
 }

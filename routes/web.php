@@ -36,6 +36,9 @@ Route::middleware('auth')->group(function () {
      Route::middleware(IsAdmin::class)
           ->resource('livros', LivroController::class)
           ->except(['index', 'show']);
+
+     Route::middleware(IsAdmin::class)
+          ->get('/livros/export', [LivroController::class, "export"]);
 });
 
 
@@ -47,4 +50,4 @@ Route::resource('autores', AutorController::class)
 
 Route::resource('editoras', EditoraController::class)
      ->only(['index', 'show']);
-     
+

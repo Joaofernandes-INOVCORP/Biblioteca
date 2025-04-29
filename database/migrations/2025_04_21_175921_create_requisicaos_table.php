@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('data_inicio');
             $table->date('data_prevista_fim');
             $table->date('data_real_fim')->nullable();
-            $table->enum('status',['ativa','concluida','cancelada'])->default('ativa');
+            $table->enum('status',['ativa','entregue','cancelada'])->default('ativa');
             $table->string('foto_cidadao')->nullable();  
             $table->timestamps();
         });

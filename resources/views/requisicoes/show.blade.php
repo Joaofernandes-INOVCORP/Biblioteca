@@ -32,7 +32,7 @@
                         </p>
                     @endif
 
-                    @if (auth()->user()?->isAdmin())
+                    @if (auth()->user()?->isAdmin() && $requisicao->status === "ativa")
                         <div class="justify-end card-actions">
                             <form method="post">
                                 @csrf

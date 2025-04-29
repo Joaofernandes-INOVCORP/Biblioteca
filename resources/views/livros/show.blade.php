@@ -23,6 +23,17 @@
                         </p>
                     @endif
                     <p class="mt-4">{{ $livro->bibliografia }}</p>
+
+                    @if ($errors->any())
+                        <div class="alert alert-error">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="mt-6 flex items-center space-x-4">
                         <span class="badge badge-primary text-xl">
                             €{{ number_format($livro->preco, 2, ',', '.') }}
@@ -30,6 +41,12 @@
                         <a href="{{ route('livros.index') }}" class="btn btn-ghost">
                             Voltar
                         </a>
+
+                        <form method="POST" action="/requisicoes">
+                            @csrf
+                            <input type="hidden" name="livro_id" value="{{ $livro->id }}">
+                            <button type="submit" class="btn btn-primary">Requisitar</button>
+                        </form>
 
                         <form method="POST" action="">
                             @csrf

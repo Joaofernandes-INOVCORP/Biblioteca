@@ -41,16 +41,16 @@ class RequisicaoController extends Controller
     {
         $data = $request->validate([
             'livro_id' => 'required|exists:livros,id',
-            'foto_cidadao' => 'required|image|max:2048',
+            'foto_cidadao' => 'image|max:2048',
         ]);
 
         $livro = Livro::findOrFail($data['livro_id']);
 
-        if ($livro->requisicaos()->where('status', 'ativa')->exists()) {
+        if ($livro->requisicoes()->where('status', 'ativa')->exists()) {
             return back()->withErrors('Livro não disponível');
         }
 
-        if (auth()->user()->requisicaos()->where('status', 'ativa')->count() >= 3) {
+        if (auth()->user()->requisicoes()->where('status', 'ativa')->count() >= 3) {
             return back()->withErrors('Limite de 3 requisições ativas');
         }
 
@@ -60,7 +60,7 @@ class RequisicaoController extends Controller
         $inicio = now()->toDateString();
         $prev = now()->addDays(5)->toDateString();
 
-        $foto = $request->file('foto_cidadao')->store('fotos', 'public');
+        $foto = $request->file('foto_cidadao')?->store('fotos', 'public');
 
         $requisicao = Requisicao::create([
             'numero' => $numero,
@@ -102,7 +102,7 @@ class RequisicaoController extends Controller
 
         if($data["action"] === "finish"){
             $requisicao->data_real_fim = now()->toDateString();
-            $requisicao->status = "concluida";
+            $requisicao->status = "entregue";
         }else{
             $requisicao->data_prevista_fim = Carbon::createFromFormat('Y-m-d', $requisicao->data_prevista_fim)->addDays(5)->toDateString();
         }

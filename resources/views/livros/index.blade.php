@@ -37,6 +37,7 @@
                 @if (auth()->user()?->isAdmin())
                     <div class="flex flex-wrap flex-grow gap-3 ps-3">
                         <a href="/livros/create" class="btn btn-primary">Registar Livro</a>
+                        <a href="/livros/export" class="btn btn-primary">Exportar Livros</a>
                     </div>
                 @endif
 
