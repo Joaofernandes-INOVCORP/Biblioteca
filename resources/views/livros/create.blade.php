@@ -6,10 +6,10 @@
 
         <x-validation-errors class="mb-4" />
 
-        <form method="POST" action="/livros">
+        <form method="POST" action="/google-books">
             @csrf
 
-            <div>
+            <!-- <div>
                 <x-label for="name" value="{{ __('ISBN') }}" />
                 <x-input id="name" class="block mt-1 w-full" type="text" name="isbn" :value="old('ispn')" required autofocus autocomplete="name" />
             </div>
@@ -37,24 +37,36 @@
             <div class="mt-4">
                 <x-label for="capa" value="{{ __('Capa') }}" />
                 <x-input id="capa" class="block mt-1 w-full" type="file" name="Bibliografia" autocomplete="capa" />
+            </div> -->
+
+            <div class="form-control">
+                <label class="label"><span class="label-text">ISBN</span></label>
+                <div class="flex gap-2">
+                    <input id="isbn" type="text" name="isbn" class="input input-bordered flex-1"
+                        value="{{ old('isbn') }}">
+                    <button type="submit" id="buscar-isbn" class="btn btn-secondary">
+                        Pesquisar
+                    </button>
+                </div>
+                <p id="isbn-erro" class="text-sm text-red-600 hidden"></p>
             </div>
 
-            
-            @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
-                <div class="mt-4">
-                    <x-label for="terms">
-                        <div class="flex items-center">
-                            <x-checkbox name="terms" id="terms" required />
 
-                            <div class="ms-2">
-                                {!! __('I agree to the :terms_of_service and :privacy_policy', [
-                                        'terms_of_service' => '<a target="_blank" href="'.route('terms.show').'" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">'.__('Terms of Service').'</a>',
-                                        'privacy_policy' => '<a target="_blank" href="'.route('policy.show').'" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">'.__('Privacy Policy').'</a>',
-                                ]) !!}
-                            </div>
+            @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
+                        <div class="mt-4">
+                            <x-label for="terms">
+                                <div class="flex items-center">
+                                    <x-checkbox name="terms" id="terms" required />
+
+                                    <div class="ms-2">
+                                        {!! __('I agree to the :terms_of_service and :privacy_policy', [
+                    'terms_of_service' => '<a target="_blank" href="' . route('terms.show') . '" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">' . __('Terms of Service') . '</a>',
+                    'privacy_policy' => '<a target="_blank" href="' . route('policy.show') . '" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">' . __('Privacy Policy') . '</a>',
+                ]) !!}
+                                    </div>
+                                </div>
+                            </x-label>
                         </div>
-                    </x-label>
-                </div>
             @endif
 
             <div class="flex items-center justify-end mt-4">

@@ -28,7 +28,6 @@ Route::middleware([
 });
 
 Route::middleware('auth')->group(function () {
-     // Requisições (cidadãos e admins)
      Route::resource('requisicoes', RequisicaoController::class)
           ->only(['index', 'store', 'show', 'update']);
 
@@ -50,4 +49,7 @@ Route::resource('autores', AutorController::class)
 
 Route::resource('editoras', EditoraController::class)
      ->only(['index', 'show']);
+
+Route::post('google-books/', [LivroController::class, 'viaGoogle'])
+     ->name('google-books-isbn');
 

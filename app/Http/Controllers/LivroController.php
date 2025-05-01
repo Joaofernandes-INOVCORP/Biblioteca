@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Editora;
 use Illuminate\Http\Request;
 use App\Models\Livro;
+use Illuminate\Support\Facades\Http;
 
 use App\Exports\LivrosExport;
 use Maatwebsite\Excel\Excel as ExcelExcel;
@@ -76,6 +77,30 @@ class LivroController extends Controller
         return redirect()->route('livros.show', $livro);
     }
 
+    public function viaGoogle(Request $request)
+{
+    $isbn = $request->validate(['isbn'=>'required'])['isbn'];
+        $resp = Http::get('https://www.googleapis.com/books/v1/volumes', [
+        'q'   => 'isbn:' . $isbn,
+        'key' => config('services.google_books.key'),
+        'maxResults' => 1,
+    ]);
+
+    if (! $resp->ok() || $resp->json('totalItems') == 0) {
+        return response()->json(['message' => 'Livro não encontrado'], 404);
+    }
+
+    $info = $resp->json('items.0.volumeInfo');
+
+    return [
+        'titulo'    => $info['title']      ?? '',
+        'autores'   => $info['authors']    ?? [],
+        'editora'   => $info['publisher']  ?? '',
+        'descricao' => $info['description']?? '',
+        'capa'      => $info['imageLinks']['thumbnail'] ?? null,
+    ];
+}
+
     public function edit(string $id)
     {
         //
@@ -97,4 +122,6 @@ class LivroController extends Controller
     {
         return Excel::download(new LivrosExport, 'livros.csv');
     }
+
+
 }

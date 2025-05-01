@@ -52,64 +52,64 @@
       </div>
 
       @if (!(request()->is("user/confirm-password") || request()->is("two-factor-challenge")))
-        <div class="flex items-center space-x-2">
-        @guest
+      <div class="flex items-center space-x-2">
+      @guest
       <x-nav-link href="/login" class="btn btn-primary">
-        Login
+      Login
       </x-nav-link>
 
       <x-nav-link href="/register" class="btn btn-primary">
-        Registar
+      Registar
       </x-nav-link>
     @endguest
 
-        @auth
-        <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-ghost rounded-field">{{ auth()->user()->name }}</div>
-          <ul tabindex="0"
-          class="dropdown-content bg-orange-400 rounded-box z-1 mt-4 p-2 shadow-sm flex flex-col gap-3">
-          <li>
-          <form method="post" action="/user/two-factor-authentication">
-          @csrf
+      @auth
+      <div class="dropdown dropdown-end">
+      <div tabindex="0" role="button" class="btn btn-ghost rounded-field">{{ auth()->user()->name }}</div>
+      <ul tabindex="0"
+      class="dropdown-content bg-orange-400 rounded-box z-1 mt-4 p-2 shadow-sm flex flex-col gap-3">
+      <li>
+        <form method="post" action="/user/two-factor-authentication">
+        @csrf
 
-          @if (auth()->user()->two_factor_secret)
+        @if (auth()->user()->two_factor_secret)
 
-        @method("DELETE")
+      @method("DELETE")
 
-        <button type="submit" class="btn btn-error">Disable 2FA</button>
+      <button type="submit" class="btn btn-error">Disable 2FA</button>
 
-      @else
+    @else
 
-      <button type="submit" class="btn btn-primary">Enable 2FA</button>
+    <button type="submit" class="btn btn-primary">Enable 2FA</button>
 
+  @endif
+
+        </form>
+      </li>
+      @if (auth()->user()->two_factor_secret)
+      <li>
+      {!! auth()->user()->twoFactorQrCodeSvg() !!}
+      </li>
+      <li>
+      <h6>Recovery code:</h6>
+      @php
+      $codes = json_decode(decrypt(auth()->user()->two_factor_recovery_codes))
+    @endphp
+      <div class="bg-base-200 p-2 rounded-field w-fit text-xs font-bold font-mono">
+      {{ $codes[array_rand($codes)] }}
+      </div>
+      </li>
     @endif
-
-          </form>
-          </li>
-          @if (auth()->user()->two_factor_secret)
-        <li>
-        {!! auth()->user()->twoFactorQrCodeSvg() !!}
-        </li>
-        <li>
-        <h6>Recovery code:</h6>
-        @php
-        $codes = json_decode(decrypt(auth()->user()->two_factor_recovery_codes))
-      @endphp
-        <div class="bg-base-200 p-2 rounded-field w-fit text-xs font-bold font-mono">
-        {{ $codes[array_rand($codes)] }}
-        </div>
-        </li>
-      @endif
-          <li>
-          <form method="POST" action="{{ route('logout') }}">
-          @csrf
-          <button type="submit" class="btn btn-error">Logout</button>
-          </form>
-          </li>
-          </ul>
-        </div>
+      <li>
+        <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="btn btn-error">Logout</button>
+        </form>
+      </li>
+      </ul>
+      </div>
     @endauth
-        </div>
+      </div>
     @endif
     </div>
   </nav>
