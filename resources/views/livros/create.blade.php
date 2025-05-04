@@ -6,49 +6,61 @@
 
         <x-validation-errors class="mb-4" />
 
-        <form method="POST" action="/google-books">
+        <form method="POST">
             @csrf
-
-            <!-- <div>
-                <x-label for="name" value="{{ __('ISBN') }}" />
-                <x-input id="name" class="block mt-1 w-full" type="text" name="isbn" :value="old('ispn')" required autofocus autocomplete="name" />
-            </div>
-
-            <div class="mt-4">
-                <x-label for="titulo" value="{{ __('Titulo') }}" />
-                <x-input id="titulo" class="block mt-1 w-full" type="text" name="titulo" :value="old('titulo')" required autocomplete="username" />
-            </div>
-
-            <div class="mt-4">
-                <x-label for="bibliografia" value="{{ __('Bibliografia') }}" />
-                <x-input id="bibliografia" class="block mt-1 w-full" type="text" name="bibliografia" :value="old('bibliografia')" required autocomplete="bibliografia" />
-            </div>
-
-            <div class="mt-4">
-                <x-label for="preco" value="{{ __('Preço') }}" />
-                <x-input id="preco" class="block mt-1 w-full" type="number" min="0" step="0.01" name="preco" :value="old('preco')" required autocomplete="preco" />
-            </div>
-
-            <div class="mt-4">
-                <x-label for="editora" value="{{ __('Editora') }}" />
-                <x-input id="editora" class="block mt-1 w-full" type="text" name="editora" :value="old('editora')" required autocomplete="editora" />
-            </div>
-
-            <div class="mt-4">
-                <x-label for="capa" value="{{ __('Capa') }}" />
-                <x-input id="capa" class="block mt-1 w-full" type="file" name="Bibliografia" autocomplete="capa" />
-            </div> -->
 
             <div class="form-control">
                 <label class="label"><span class="label-text">ISBN</span></label>
                 <div class="flex gap-2">
                     <input id="isbn" type="text" name="isbn" class="input input-bordered flex-1"
-                        value="{{ old('isbn') }}">
+                        :value="$livro['isbn'] ?? old('ispn')">
                     <button type="submit" id="buscar-isbn" class="btn btn-secondary">
                         Pesquisar
                     </button>
                 </div>
-                <p id="isbn-erro" class="text-sm text-red-600 hidden"></p>
+                @if (array_key_exists("error", $livro))
+                    <p id="isbn-erro" class="text-sm text-red-600">
+                        {{ $livro["error"] }}
+                    </p>
+                @endif
+            </div>
+        </form>
+
+        <form method="POST" action="/livros">
+            @csrf
+            <div>
+                <x-label for="name" value="{{ __('ISBN') }}" />
+                <x-input id="name" class="block mt-1 w-full" type="text" name="isbn" :value="$livro['isbn'] ?? old('ispn')" required
+                    autofocus autocomplete="name" />
+            </div>
+
+            <div class="mt-4">
+                <x-label for="titulo" value="{{ __('Titulo') }}" />
+                <x-input id="titulo" class="block mt-1 w-full" type="text" name="titulo" :value="$livro['titulo'] ?? old('titulo')" required
+                    autocomplete="username" />
+            </div>
+
+            <div class="mt-4">
+                <x-label for="bibliografia" value="{{ __('Bibliografia') }}" />
+                <x-input id="bibliografia" class="block mt-1 w-full" type="text" name="bibliografia"
+                    :value="$livro['bibliografia'] ?? old('bibliografia')" required autocomplete="bibliografia" />
+            </div>
+
+            <div class="mt-4">
+                <x-label for="preco" value="{{ __('Preço') }}" />
+                <x-input id="preco" class="block mt-1 w-full" type="number" min="0" step="0.01" name="preco"
+                    :value="$livro['preco'] ?? old('preco')" required autocomplete="preco" />
+            </div>
+
+            <div class="mt-4">
+                <x-label for="editora" value="{{ __('Editora') }}" />
+                <x-input id="editora" class="block mt-1 w-full" type="text" name="editora" :value="$livro['editora'] ?? old('editora')"
+                    required autocomplete="editora" />
+            </div>
+
+            <div class="mt-4">
+                <x-label for="capa" value="{{ __('Capa') }}" />
+                <x-input id="capa" class="block mt-1 w-full" type="file" name="Bibliografia" autocomplete="capa" />
             </div>
 
 

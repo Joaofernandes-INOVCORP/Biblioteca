@@ -38,6 +38,8 @@ Route::middleware('auth')->group(function () {
 
      Route::middleware(IsAdmin::class)
           ->get('/livros/export', [LivroController::class, "export"]);
+
+     Route::middleware(IsAdmin::class)->post("/livros/create", [LivroController::class,"create"]);
 });
 
 

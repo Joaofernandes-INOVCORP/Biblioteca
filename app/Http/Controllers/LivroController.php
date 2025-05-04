@@ -44,9 +44,18 @@ class LivroController extends Controller
     }
 
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('livros.create');
+        $data = $request->validate(["isbn" => "sometimes|min_digits:10|max_digits:13"]);
+        $livro = [];
+
+        if (!empty($data) && $data["isbn"]) {
+            //create filled
+            $livro = $this->viaGoogle($data["isbn"]);
+
+        }
+
+        return view("livros.create", compact("livro"));
     }
 
     public function store(Request $request)
@@ -77,29 +86,33 @@ class LivroController extends Controller
         return redirect()->route('livros.show', $livro);
     }
 
-    public function viaGoogle(Request $request)
-{
-    $isbn = $request->validate(['isbn'=>'required'])['isbn'];
+    public function viaGoogle(int $isbn)
+    {
+
+
         $resp = Http::get('https://www.googleapis.com/books/v1/volumes', [
-        'q'   => 'isbn:' . $isbn,
-        'key' => config('services.google_books.key'),
-        'maxResults' => 1,
-    ]);
+            'q' => 'isbn:' . $isbn,
+            'maxResults' => 1,
+        ]);
 
-    if (! $resp->ok() || $resp->json('totalItems') == 0) {
-        return response()->json(['message' => 'Livro não encontrado'], 404);
+        
+        if (!$resp->ok() || $resp->json('totalItems') == 0) {
+            return [
+                "error" => "Livro não encontrado!",
+            ];
+        }
+        
+        $info = $resp->json('items.0.volumeInfo');
+
+        return [
+            'isbn' => $isbn,
+            'titulo' => $info['title'] ?? '',
+            'autores' => $info['authors'] ?? [],
+            'editora' => $info['publisher'] ?? '',
+            'bibliografia' => $info['description'] ?? '',
+            'capa' => $info['imageLinks']['thumbnail'] ?? null,
+        ];
     }
-
-    $info = $resp->json('items.0.volumeInfo');
-
-    return [
-        'titulo'    => $info['title']      ?? '',
-        'autores'   => $info['authors']    ?? [],
-        'editora'   => $info['publisher']  ?? '',
-        'descricao' => $info['description']?? '',
-        'capa'      => $info['imageLinks']['thumbnail'] ?? null,
-    ];
-}
 
     public function edit(string $id)
     {
