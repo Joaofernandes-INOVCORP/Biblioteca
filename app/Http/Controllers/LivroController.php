@@ -50,9 +50,7 @@ class LivroController extends Controller
         $livro = [];
 
         if (!empty($data) && $data["isbn"]) {
-            //create filled
             $livro = $this->viaGoogle($data["isbn"]);
-
         }
 
         return view("livros.create", compact("livro"));
@@ -66,9 +64,8 @@ class LivroController extends Controller
             'bibliografia' => 'required',
             'preco' => 'required|decimal:2',
             'editora' => 'required|exists:App\Models\Editora,nome',
-            'capa' => 'file|max:4096',
+            'capa' => 'max:4096',
         ]);
-
         if ($request->file('capa'))
             $capa = $request->file('capa')->store('fotos', 'public');
         else
@@ -95,13 +92,13 @@ class LivroController extends Controller
             'maxResults' => 1,
         ]);
 
-        
+
         if (!$resp->ok() || $resp->json('totalItems') == 0) {
             return [
                 "error" => "Livro não encontrado!",
             ];
         }
-        
+
         $info = $resp->json('items.0.volumeInfo');
 
         return [

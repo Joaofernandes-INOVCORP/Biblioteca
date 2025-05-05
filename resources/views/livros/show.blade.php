@@ -2,11 +2,11 @@
     <div class="min-h-screen py-16">
         <div class="container mx-auto px-4">
             <div class="card lg:card-side bg-orange-400 shadow-xl">
-                <figure class="p-4">
+                <figure class="p-4 w-80 flex-none">
                     <img src="{{ $livro->capa
-    ? asset('storage/' . $livro->capa)
-    : 'https://via.placeholder.com/300x400?text=Sem+Capa' }}" alt="{{ $livro->nome }}"
-                        class="rounded-lg object-cover h-80 w-full" />
+                        ? asset('storage/' . $livro->capa)
+                        : 'https://via.placeholder.com/300x400?text=Sem+Capa' }}" alt="{{ $livro->nome }}"
+                        class="rounded-lg w-auto h-auto block" />
                 </figure>
                 <div class="card-body">
                     <h1 class="card-title text-3xl">{{ $livro->nome }}</h1>

@@ -10,10 +10,9 @@
             @csrf
 
             <div class="form-control">
-                <label class="label"><span class="label-text">ISBN</span></label>
+            <x-label for="name" value="{{ __('ISBN') }}" />
                 <div class="flex gap-2">
-                    <input id="isbn" type="text" name="isbn" class="input input-bordered flex-1"
-                        :value="$livro['isbn'] ?? old('ispn')">
+                <x-input id="name" class="block mt-1 w-full" type="text" name="isbn" :value="$livro['isbn'] ?? old('ispn')" required autofocus autocomplete="name" />
                     <button type="submit" id="buscar-isbn" class="btn btn-secondary">
                         Pesquisar
                     </button>
@@ -25,8 +24,16 @@
                 @endif
             </div>
         </form>
+        
+        <p class="my-4 font-bold text-gray-300">
+            @if (array_key_exists('titulo',$livro	))
+                Confirme os dados do livro:
+                @else
+                Se preferir pode inserir manualmente os dados do livro que pretende adicionar:
+            @endif
+        </p>
 
-        <form method="POST" action="/livros">
+        <form method="POST" action="/livros" enctype="multipart/form-data">
             @csrf
             <div>
                 <x-label for="name" value="{{ __('ISBN') }}" />
@@ -60,7 +67,7 @@
 
             <div class="mt-4">
                 <x-label for="capa" value="{{ __('Capa') }}" />
-                <x-input id="capa" class="block mt-1 w-full" type="file" name="Bibliografia" autocomplete="capa" />
+                <x-input id="capa" class="block mt-1 w-full" type="file" name="capa" autocomplete="capa" />
             </div>
 
 
