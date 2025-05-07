@@ -14,7 +14,6 @@ use App\Models\Requisicao;
 
 class User extends Authenticatable
 {
-    //NÃO REMOVER NADA DO Q ESTA AQUI OU VAI DAR MERDA QwQ
     use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     protected $fillable = [
