@@ -5,7 +5,7 @@ use App\Models\Requisicao;
 use App\Models\User;
 use function Pest\Laravel\actingAs;
 
-it('Criar uma requisição', function () {
+it('cria uma requisição', function () {
 
     $user = User::factory()->create();
 
@@ -15,7 +15,7 @@ it('Criar uma requisição', function () {
         'livro_id' => $livro->id,
     ];
 
-    $res = actingAs($user)->post('/requisicoes', $data);
+    actingAs($user)->post('/requisicoes', $data)->assertRedirect();
 
 
     $req = Requisicao::where("livro_id", "=", $livro->id)

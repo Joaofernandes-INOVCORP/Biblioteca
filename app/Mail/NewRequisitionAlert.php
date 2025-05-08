@@ -13,12 +13,15 @@ class NewRequisitionAlert extends Mailable
 {
     use Queueable, SerializesModels;
 
+    protected $requisicao;
+    public $user_email;
     /**
      * Create a new message instance.
      */
-    public function __construct($requisicao)
+    public function __construct($requisicao, $to)
     {
-        //
+        $this->requisicao = $requisicao;
+        $this->user_email = $to;
     }
 
     /**
@@ -49,5 +52,14 @@ class NewRequisitionAlert extends Mailable
     public function attachments(): array
     {
         return [];
+    }
+
+    public function build()
+    {
+        return $this->from('biblioteca@test.com', "Biblioteca")
+            ->to($this->user_email)
+            ->view("emails.requisicao.comfirmada")->with([
+                    'requisicao' => $this->requisicao
+                ]);
     }
 }

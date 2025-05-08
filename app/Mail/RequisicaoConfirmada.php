@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Requisicao;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -13,13 +14,17 @@ class RequisicaoConfirmada extends Mailable
 {
     use Queueable, SerializesModels;
 
+    protected Requisicao $requisicao;
+    public string $user_email;
     /**
      * Create a new message instance.
      */
-    public function __construct($requisicao)
+    public function __construct(Requisicao $requisicao, string $to)
     {
-        //
+        $this->requisicao = $requisicao;
+        $this->user_email = $to;
     }
+
 
     /**
      * Get the message envelope.
@@ -49,5 +54,14 @@ class RequisicaoConfirmada extends Mailable
     public function attachments(): array
     {
         return [];
+    }
+
+    public function build()
+    {
+        return $this->from('biblioteca@test.com', "Biblioteca")
+            ->to($this->user_email)
+            ->view("emails.requisicao.alert")->with([
+                    'requisicao' => $this->requisicao
+                ]);
     }
 }

@@ -70,10 +70,13 @@ class RequisicaoController extends Controller
             'data_prevista_fim' => $prev,
             'foto_cidadao' => $foto,
         ]);
-        
-        Mail::to(auth()->user())->send(new RequisicaoConfirmada($requisicao));
-        Mail::to(User::where('role', 'admin')->pluck('email'))
-            ->send(new NewRequisitionAlert($requisicao));
+
+        $admins = User::where('role', 'admin');
+
+        Mail::to(auth()->user())->send(new RequisicaoConfirmada($requisicao, auth()->user()->email));
+        if ($admins->count() > 0)
+            Mail::to($admins->get())
+                ->send(new NewRequisitionAlert($requisicao, $admins->pluck('email')->toArray()));
 
         return redirect()->route('requisicoes.show', $requisicao);
     }
@@ -100,13 +103,13 @@ class RequisicaoController extends Controller
 
         $requisicao = Requisicao::find($id);
 
-        if($data["action"] === "finish"){
+        if ($data["action"] === "finish") {
             $requisicao->data_real_fim = now()->toDateString();
             $requisicao->status = "entregue";
-        }else{
+        } else {
             $requisicao->data_prevista_fim = Carbon::createFromFormat('Y-m-d', $requisicao->data_prevista_fim)->addDays(5)->toDateString();
         }
-        
+
         $requisicao->save();
 
         return back();
@@ -117,5 +120,5 @@ class RequisicaoController extends Controller
         //
     }
 
-    
+
 }
