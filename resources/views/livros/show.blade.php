@@ -4,12 +4,13 @@
             <div class="card lg:card-side bg-orange-400 shadow-xl">
                 <figure class="p-4 w-80 flex-none">
                     <img src="{{ $livro->capa
-                        ? asset('storage/' . $livro->capa)
-                        : 'https://via.placeholder.com/300x400?text=Sem+Capa' }}" alt="{{ $livro->nome }}"
+    ? asset('storage/' . $livro->capa)
+    : 'https://via.placeholder.com/300x400?text=Sem+Capa' }}" alt="{{ $livro->nome }}"
                         class="rounded-lg w-auto h-auto block" />
                 </figure>
                 <div class="card-body">
                     <h1 class="card-title text-3xl">{{ $livro->nome }}</h1>
+                    <p class="text-sm text-gray-600 text-opacity-50"><span class="font-bold">{{ $reqs }}</span> de <span class="font-bold">{{ $livro->stock }}</span> requisitados</p>
                     <p class="text-sm text-gray-600">
                         ISBN: {{ $livro->isbn }}
                     </p>
@@ -42,11 +43,13 @@
                             Voltar
                         </a>
 
-                        <form method="POST" action="/requisicoes">
-                            @csrf
-                            <input type="hidden" name="livro_id" value="{{ $livro->id }}">
-                            <button type="submit" class="btn btn-primary">Requisitar</button>
-                        </form>
+                        @if ($reqs < $livro->stock)
+                            <form method="POST" action="/requisicoes">
+                                @csrf
+                                <input type="hidden" name="livro_id" value="{{ $livro->id }}">
+                                <button type="submit" class="btn btn-primary">Requisitar</button>
+                            </form>
+                        @endif
 
                         <form method="POST" action="">
                             @csrf

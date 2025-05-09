@@ -46,8 +46,8 @@ class RequisicaoController extends Controller
 
         $livro = Livro::findOrFail($data['livro_id']);
 
-        if ($livro->requisicoes()->where('status', 'ativa')->exists()) {
-            return back()->withErrors('Livro não disponível');
+        if ($livro->requisicoes()->where('status', 'ativa')->count() >= $livro->stock) {
+            return back()->withErrors('Livro fora de stock');
         }
 
         if (auth()->user()->requisicoes()->where('status', 'ativa')->count() >= 3) {

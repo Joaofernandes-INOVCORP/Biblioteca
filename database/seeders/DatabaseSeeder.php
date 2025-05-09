@@ -42,14 +42,14 @@ class DatabaseSeeder extends Seeder
                 $autores->random(rand(1, 3))->pluck('id')->toArray()
             );
         });
-        
+
         //vai buscar os 2 primeiros users, 5 livros aleatórios e proximo ID de requisições
-        $users = Livro::limit(2)->get();
-        $books = Livro::inRandomOrder()->limit(5)->get();
+        $users = User::limit(2)->get();
+        $books = Livro::where('stock', '>=', 2)->inRandomOrder()->limit(5)->get();
         $curr = (Requisicao::max('id') ?? 0) + 1;
 
         foreach ($users as $u) {
-            for ($i=0; $i < 2; $i++) { 
+            for ($i = 0; $i < 2; $i++) {
                 $remove = random_int(3, 4);
 
                 $r = Requisicao::create([

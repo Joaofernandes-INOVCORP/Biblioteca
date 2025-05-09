@@ -23,6 +23,7 @@ class LivroFactory extends Factory
             'capa' => null,
             'preco' => $this->faker->randomFloat(2, 5, 50),
             'editora_id' => \App\Models\Editora::inRandomOrder()->first()?->id ?? \App\Models\Editora::factory(),
+            'stock' => rand(1, 3)
         ];
     }
 }

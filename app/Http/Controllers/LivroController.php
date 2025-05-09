@@ -40,7 +40,9 @@ class LivroController extends Controller
     {
         $livro->load(['autores', 'editoras']);
 
-        return view('livros.show', compact('livro'));
+        $reqs = $livro->requisicoes()->count();
+ 
+        return view('livros.show', compact('livro', 'reqs'));
     }
 
 
@@ -65,7 +67,9 @@ class LivroController extends Controller
             'preco' => 'required|decimal:2',
             'editora' => 'required|exists:App\Models\Editora,nome',
             'capa' => 'max:4096',
+            'stock' => 'required|numeric|integer|min:0'
         ]);
+
         if ($request->file('capa'))
             $capa = $request->file('capa')->store('fotos', 'public');
         else

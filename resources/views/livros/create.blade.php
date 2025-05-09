@@ -66,6 +66,11 @@
             </div>
 
             <div class="mt-4">
+                <x-label for="stock" value="{{ __('Stock') }}" />
+                <x-input id="stock" class="block mt-1 w-full" type="number" min="0" step="1" name="stock" required/>
+            </div>
+
+            <div class="mt-4">
                 <x-label for="capa" value="{{ __('Capa') }}" />
                 <x-input id="capa" class="block mt-1 w-full" type="file" name="capa" autocomplete="capa" />
             </div>

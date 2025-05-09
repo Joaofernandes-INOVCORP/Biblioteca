@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('bibliografia')->nullable();
             $table->string('capa')->nullable();
             $table->decimal('preco', 8, 2);
+            $table->integer("stock");
             $table->foreignId('editora_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });        

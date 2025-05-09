@@ -17,7 +17,8 @@ class Livro extends Model
         'bibliografia',
         'capa',
         'preco',
-        'editora_id'
+        'editora_id',
+        'stock'
     ];
 
     public function autores()

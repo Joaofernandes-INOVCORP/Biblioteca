@@ -23,6 +23,11 @@
                         <h2 class="card-title">
                             Requisiçao: {{ $requisicao->numero }}
                         </h2>
+                        @if (auth()->user()?->isAdmin())
+                            <p class="text-xs text-opacity-50">
+                                Requisição de {{ $requisicao->user->name }}
+                            </p>
+                        @endif
                         <hr class="border-orange-900">
                         <p>
                             {{ $requisicao->livro->nome }}
