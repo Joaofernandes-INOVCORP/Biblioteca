@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\LivroController;
 use App\Http\Middleware\IsAdmin;
-use App\Models\Requisicao;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AutorController;
 use App\Http\Controllers\EditoraController;
@@ -10,7 +10,7 @@ use App\Http\Controllers\RequisicaoController;
 
 Route::get('/', function () {
      return view('welcome');
-});
+})->name("home");
 
 Route::middleware([
      'auth:sanctum',
@@ -39,7 +39,10 @@ Route::middleware('auth')->group(function () {
      Route::middleware(IsAdmin::class)
           ->get('/livros/export', [LivroController::class, "export"]);
 
-     Route::middleware(IsAdmin::class)->post("/livros/create", [LivroController::class,"create"]);
+     Route::middleware(IsAdmin::class)->post("/livros/create", [LivroController::class, "create"]);
+
+     Route::resource('cart', CartController::class)
+          ->only(['index', 'store', 'delete']);
 });
 
 

@@ -10,7 +10,7 @@
                 </figure>
                 <div class="card-body">
                     <h1 class="card-title text-3xl">{{ $livro->nome }}</h1>
-                    <p class="text-sm text-gray-600 text-opacity-50"><span class="font-bold">{{ $reqs }}</span> de <span class="font-bold">{{ $livro->stock }}</span> requisitados</p>
+                    <p class="text-sm text-gray-600 text-opacity-50"><span class="font-bold">{{ $reqs }}</span> de <span class="font-bold">{{ $livro->stock - (auth()->user()?->cart()? auth()->user()->cart()?->items->sum('amount') ?? 0 : 0) }}</span> requisitados</p>
                     <p class="text-sm text-gray-600">
                         ISBN: {{ $livro->isbn }}
                     </p>
@@ -39,6 +39,7 @@
                         <span class="badge badge-primary text-xl">
                             €{{ number_format($livro->preco, 2, ',', '.') }}
                         </span>
+
                         <a href="{{ route('livros.index') }}" class="btn btn-ghost">
                             Voltar
                         </a>
@@ -48,6 +49,15 @@
                                 @csrf
                                 <input type="hidden" name="livro_id" value="{{ $livro->id }}">
                                 <button type="submit" class="btn btn-primary">Requisitar</button>
+                            </form>
+                        @endif
+
+                        @if (($livro->stock - (auth()->user()?->cart()? auth()->user()->cart()->items->sum('amount') : 0) - $reqs) > 0)
+                            <form method="POST" action="{{ route("cart.store") }}">
+                                @csrf
+                                <input type="hidden" name="livro_id" value="{{ $livro->id }}">
+                                <input type="hidden" name="amount" value="1">
+                                <button type="submit" class="btn btn-primary">Adicionar ao carrinho</button>
                             </form>
                         @endif
 

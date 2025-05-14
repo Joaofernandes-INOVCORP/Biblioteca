@@ -6,15 +6,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
 use App\Models\Requisicao;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable, Billable;
 
     protected $fillable = [
         'name',
@@ -42,6 +42,14 @@ class User extends Authenticatable
 
     public function requisicoes(){
         return $this->hasMany(Requisicao::class);
+    }
+
+    public function carts(){
+        return $this->hasMany(Cart::class);
+    }
+
+    public function cart() {
+        return Cart::where('status', '=', $this->id)->first();
     }
 
     public function isAdmin(): bool

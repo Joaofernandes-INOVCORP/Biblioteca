@@ -40,7 +40,7 @@ class LivroController extends Controller
     {
         $livro->load(['autores', 'editoras']);
 
-        $reqs = $livro->requisicoes()->count();
+        $reqs = $livro->requisicoes()->where("status", "=", "ativa")->count();
  
         return view('livros.show', compact('livro', 'reqs'));
     }
