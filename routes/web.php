@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LivroController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
@@ -42,7 +43,12 @@ Route::middleware('auth')->group(function () {
      Route::middleware(IsAdmin::class)->post("/livros/create", [LivroController::class, "create"]);
 
      Route::resource('cart', CartController::class)
-          ->only(['index', 'store', 'delete']);
+          ->only(['index', 'store', 'update', 'delete']);
+
+     Route::middleware('auth')->post('/checkout', [CheckoutController::class, 'finalizarPagamento'])->name('checkout');
+     Route::middleware('auth')->post('/enviar/', [CheckoutController::class, 'enviado'])->name('encomenda.update');
+     Route::middleware('auth')->get('/checkout/sucesso', [CheckoutController::class, 'sucesso'] )->name('checkout.sucesso');
+     Route::middleware('auth')->get('/checkout/cancelado', [CheckoutController::class, 'cancelado'])->name('checkout.cancelado');
 });
 
 

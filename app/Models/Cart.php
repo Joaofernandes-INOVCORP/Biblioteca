@@ -10,12 +10,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Cart extends Model
 {
     protected $fillable = [
-        'user_id'
+        'user_id',
+        'status'
     ];
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function items(): HasMany

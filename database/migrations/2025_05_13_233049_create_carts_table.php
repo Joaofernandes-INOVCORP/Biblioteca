@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->timestamps();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('status', ['active', 'pending', 'finished']);
+            $table->enum('status', ['active', 'finished']);
         });
 
         Schema::create("cart_livro", function (Blueprint $table) {

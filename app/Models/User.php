@@ -44,12 +44,8 @@ class User extends Authenticatable
         return $this->hasMany(Requisicao::class);
     }
 
-    public function carts(){
-        return $this->hasMany(Cart::class);
-    }
-
-    public function cart() {
-        return Cart::where('status', '=', $this->id)->first();
+    public function cart(){
+        return $this->hasOne(Cart::class);
     }
 
     public function isAdmin(): bool

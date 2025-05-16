@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\CartItems;
+use App\Models\Encomenda;
 use App\Models\Livro;
 use Illuminate\Http\Request;
 
@@ -14,13 +15,14 @@ class CartController extends Controller
      */
     public function index()
     {
-        if(auth()->user()->isAdmin()){
-            $carts = Cart::with('items.livro')->get();
-        }else{
-            $carts = [auth()->user()->cart()];
+        $cart = auth()->user()->cart;
+        if (auth()->user()->isAdmin()) {
+            $enc = Encomenda::with(['items.livro', 'user'])->get();
+        } else {
+            $enc = null;
         }
 
-        return view('carts.index', compact('carts'));
+        return view('carts.index', compact('cart', 'enc'));
     }
 
     /**
@@ -45,11 +47,11 @@ class CartController extends Controller
         $livro = Livro::find($data["livro_id"]);
 
 
-        if (($livro->stock - ($livro->requisicoes()->where('status', '=', 'ativa')->count() + (auth()->user()->cart()?->items->where('livro_id', '=', $data["livro_id"])->sum('amount') ?? 0))) < $data["amount"]) {
+        if (($livro->stock - ($livro->requisicoes()->where('status', '=', 'ativa')->count() + (auth()->user()->cart?->items->where('livro_id', '=', $data["livro_id"])->sum('amount') ?? 0))) < $data["amount"]) {
             return back()->withErrors('Livros insuficientes!');
         }
 
-        $cart = auth()->user()->cart();
+        $cart = auth()->user()->cart;
 
         if (!$cart) {
             $cart = Cart::create(["user_id" => auth()->user()->id]);
@@ -101,11 +103,11 @@ class CartController extends Controller
         $livro = Livro::find($data["livro_id"]);
 
 
-        if (($livro->stock - ($livro->requisicoes()->where('status', '=', 'ativa')->count() + (auth()->user()->cart()?->items->where('livro_id', '=', $data["livro_id"])->sum('amount') ?? 0))) < $data["amount"]) {
+        if ($livro->stock - ($livro->requisicoes()->where('status', '=', 'ativa')->count()) < $data["amount"]) {
             return back()->withErrors('Livros insuficientes!');
         }
 
-        $cart = auth()->user()->cart();
+        $cart = auth()->user()->cart;
 
         if (!$cart) {
             $cart = Cart::create(["user_id" => auth()->user()->id]);
@@ -120,6 +122,15 @@ class CartController extends Controller
                 'amount' => $data["amount"]
             ]);
         } else {
+            if ($data["amount"] == 0) {
+                CartItems::destroy($item->id);
+
+                if ($cart->items()->count() == 0)
+                    Cart::destroy($cart->id);
+
+                return redirect(route("home"));
+            }
+
             $item->amount = $data["amount"];
             $item->save();
         }

@@ -10,7 +10,7 @@
                 </figure>
                 <div class="card-body">
                     <h1 class="card-title text-3xl">{{ $livro->nome }}</h1>
-                    <p class="text-sm text-gray-600 text-opacity-50"><span class="font-bold">{{ $reqs }}</span> de <span class="font-bold">{{ $livro->stock - (auth()->user()?->cart()? auth()->user()->cart()?->items->sum('amount') ?? 0 : 0) }}</span> requisitados</p>
+                    <p class="text-sm text-gray-600 text-opacity-50"><span class="font-bold">{{ $reqs }}</span> de <span class="font-bold">{{ $livro->stock - (auth()->user()?->cart? auth()->user()->cart?->items->sum('amount') ?? 0 : 0) }}</span> requisitados</p>
                     <p class="text-sm text-gray-600">
                         ISBN: {{ $livro->isbn }}
                     </p>
@@ -52,7 +52,7 @@
                             </form>
                         @endif
 
-                        @if (($livro->stock - (auth()->user()?->cart()? auth()->user()->cart()->items->sum('amount') : 0) - $reqs) > 0)
+                        @if (($livro->stock - (auth()->user()?->cart? auth()->user()->cart->items->sum('amount') : 0) - $reqs) > 0)
                             <form method="POST" action="{{ route("cart.store") }}">
                                 @csrf
                                 <input type="hidden" name="livro_id" value="{{ $livro->id }}">
