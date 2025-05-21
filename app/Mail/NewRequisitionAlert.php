@@ -40,7 +40,10 @@ class NewRequisitionAlert extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.requisicao.alert',
+            markdown: 'emails.requisicao.confirmada',
+            with: [
+                'requisicao' => $this->requisicao
+            ]
         );
     }
 
@@ -52,14 +55,5 @@ class NewRequisitionAlert extends Mailable
     public function attachments(): array
     {
         return [];
-    }
-
-    public function build()
-    {
-        return $this->from('biblioteca@test.com', "Biblioteca")
-            ->to($this->user_email)
-            ->view("emails.requisicao.comfirmada")->with([
-                    'requisicao' => $this->requisicao
-                ]);
     }
 }

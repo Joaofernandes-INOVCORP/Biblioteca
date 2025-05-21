@@ -3,7 +3,9 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LivroController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsCidadao;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AutorController;
 use App\Http\Controllers\EditoraController;
@@ -45,9 +47,17 @@ Route::middleware('auth')->group(function () {
      Route::resource('cart', CartController::class)
           ->only(['index', 'store', 'update', 'delete']);
 
+     Route::middleware(IsCidadao::class)
+          ->resource('review', ReviewController::class)
+          ->only(['store']);
+
+     Route::middleware(IsAdmin::class)
+          ->resource('review', ReviewController::class)
+          ->only(['update']);
+
      Route::middleware('auth')->post('/checkout', [CheckoutController::class, 'finalizarPagamento'])->name('checkout');
      Route::middleware('auth')->post('/enviar/', [CheckoutController::class, 'enviado'])->name('encomenda.update');
-     Route::middleware('auth')->get('/checkout/sucesso', [CheckoutController::class, 'sucesso'] )->name('checkout.sucesso');
+     Route::middleware('auth')->get('/checkout/sucesso', [CheckoutController::class, 'sucesso'])->name('checkout.sucesso');
      Route::middleware('auth')->get('/checkout/cancelado', [CheckoutController::class, 'cancelado'])->name('checkout.cancelado');
 });
 
@@ -63,4 +73,9 @@ Route::resource('editoras', EditoraController::class)
 
 Route::post('google-books/', [LivroController::class, 'viaGoogle'])
      ->name('google-books-isbn');
+
+Route::post('/livros/{livro}/notificar-disponivel', [LivroController::class, 'notificarDisponivel'])
+     ->middleware('auth')
+     ->name('notificar.disponivel');
+
 

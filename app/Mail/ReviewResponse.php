@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\Requisicao;
+use App\Models\Review;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -10,17 +10,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class RequisicaoConfirmada extends Mailable
+class ReviewResponse extends Mailable
 {
     use Queueable, SerializesModels;
 
+    
     /**
      * Create a new message instance.
      */
-    public function __construct(public Requisicao $requisicao)
+    public function __construct(public array $response, public Review $review)
     {
-    }
 
+    }
 
     /**
      * Get the message envelope.
@@ -28,7 +29,7 @@ class RequisicaoConfirmada extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Requisicao Confirmada',
+            subject: 'Review Response',
         );
     }
 
@@ -38,9 +39,10 @@ class RequisicaoConfirmada extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.requisicao.confirmada',
+            markdown: 'emails.review.response',
             with: [
-                'requisicao' => $this->requisicao
+                'response' => $this->response,
+                'review' => $this->review
             ]
         );
     }

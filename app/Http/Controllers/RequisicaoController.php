@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Mail\NewRequisitionAlert;
 use App\Mail\RequisicaoConfirmada;
 use App\Models\Livro;
+use App\Mail\LivroDisponivel;
+use App\Models\NotificacaoDisponibilidade;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Requisicao;
 use Illuminate\Support\Facades\Auth;
 use Mail;
+
 
 
 class RequisicaoController extends Controller
@@ -20,9 +23,19 @@ class RequisicaoController extends Controller
         $user = Auth::user();
 
         if ($user->isAdmin()) {
-            $reqs = Requisicao::with(['livro', 'user'])->latest()->get();
+            $reqs = Requisicao::with(['livro', 'user'])->orderByRaw("
+            CASE status
+                WHEN 'ativa' THEN 0
+                ELSE 1
+            END
+            ")->get();
         } else {
-            $reqs = $user->requisicoes()->with('livro')->latest()->get();
+            $reqs = $user->requisicoes()->with('livro')->orderByRaw("
+            CASE status
+                WHEN 'ativa' THEN 0
+                ELSE 1
+            END
+            ")->get();
         }
 
         $ativas = Requisicao::where('status', 'ativa')->count();
@@ -106,6 +119,16 @@ class RequisicaoController extends Controller
         if ($data["action"] === "finish") {
             $requisicao->data_real_fim = now()->toDateString();
             $requisicao->status = "entregue";
+
+            //enviar email após o livro estar disponivel para os users que pediram para serem notificados
+            /*$livro = $requisicao->livro;
+            $notificacoes = NotificacaoDisponibilidade::where('livro_id', $livro->id)->get();
+
+            foreach ($notificacoes as $not) {
+                Mail::to($not->user->email)->send(new LivroDisponivel($livro));
+                $not->delete();
+            }*/
+
         } else {
             $requisicao->data_prevista_fim = Carbon::createFromFormat('Y-m-d', $requisicao->data_prevista_fim)->addDays(5)->toDateString();
         }

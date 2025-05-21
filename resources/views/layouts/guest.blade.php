@@ -90,19 +90,19 @@
         class="dropdown-content bg-orange-400 rounded-box z-1 mt-4 p-2 shadow-sm flex flex-col gap-3">
         <li>
         <form method="post" action="/user/two-factor-authentication">
-        @csrf
+          @csrf
 
-        @if (auth()->user()->two_factor_secret)
+          @if (auth()->user()->two_factor_secret)
 
-        @method("DELETE")
+          @method("DELETE")
 
-        <button type="submit" class="btn btn-error">Disable 2FA</button>
+          <button type="submit" class="btn btn-error">Disable 2FA</button>
 
-      @else
+          @else
 
-        <button type="submit" class="btn btn-primary">Enable 2FA</button>
+            <button type="submit" class="btn btn-primary">Enable 2FA</button>
 
-      @endif
+          @endif
 
         </form>
         </li>

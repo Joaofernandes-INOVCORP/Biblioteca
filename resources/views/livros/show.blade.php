@@ -10,7 +10,9 @@
                 </figure>
                 <div class="card-body">
                     <h1 class="card-title text-3xl">{{ $livro->nome }}</h1>
-                    <p class="text-sm text-gray-600 text-opacity-50"><span class="font-bold">{{ $reqs }}</span> de <span class="font-bold">{{ $livro->stock - (auth()->user()?->cart? auth()->user()->cart?->items->sum('amount') ?? 0 : 0) }}</span> requisitados</p>
+                    <p class="text-sm text-gray-600 text-opacity-50"><span class="font-bold">{{ $reqs }}</span> de <span
+                            class="font-bold">{{ $livro->stock - (auth()->user()?->cart ? auth()->user()->cart?->items->sum('amount') ?? 0 : 0) }}</span>
+                        requisitados</p>
                     <p class="text-sm text-gray-600">
                         ISBN: {{ $livro->isbn }}
                     </p>
@@ -52,7 +54,14 @@
                             </form>
                         @endif
 
-                        @if (($livro->stock - (auth()->user()?->cart? auth()->user()->cart->items->sum('amount') : 0) - $reqs) > 0)
+                        @if($livro->requisicoes()->where('status', 'ativa')->exists())
+                            <form action="{{ route('notificar.disponivel', $livro) }}" method="POST">
+                                @csrf
+                                <button class="btn btn-primary">Notificar-me quando disponível</button>
+                            </form>
+                        @endif
+
+                        @if (($livro->stock - (auth()->user()?->cart ? auth()->user()->cart->items->sum('amount') : 0) - $reqs) > 0)
                             <form method="POST" action="{{ route("cart.store") }}">
                                 @csrf
                                 <input type="hidden" name="livro_id" value="{{ $livro->id }}">
@@ -66,10 +75,31 @@
                             @method("DELETE")
                             <button type="submit" class="btn btn-error">Eliminar</button>
                         </form>
-
                     </div>
                 </div>
             </div>
         </div>
+        @if ($reqs_with_reviews->count() > 0)
+
+            <div class="container flex flex-col gap-3 px-20 pt-5 mx-auto">
+                <h3>Reviews</h3>
+                @foreach ($reqs_with_reviews as $req)
+                    <div class="flex flex-col gap-1 w-full bg-orange-400 rounded-lg p-5">
+                        <div class="w-fit">
+                            {{ $req->review->user->name }}
+                        </div>
+                        <hr class="border-orange-900">
+                        <div class="flex flex-row">
+                            <div class="grow">
+                                {{ $req->review->comentario }}
+                            </div>
+                            <div class="w-1/12">
+                                {{ $req->review->pontuacao }} / 10
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
 </x-guest-layout>

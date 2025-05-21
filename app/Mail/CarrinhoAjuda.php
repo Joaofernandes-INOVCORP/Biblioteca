@@ -13,13 +13,11 @@ class CarrinhoAjuda extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user_email;
     /**
      * Create a new message instance.
      */
-    public function __construct($to)
+    public function __construct()
     {
-        $this->user_email = $to;
     }
 
     /**
@@ -38,7 +36,7 @@ class CarrinhoAjuda extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            text: 'Tem o carrinho à mais de uma hora, precisa de ajuda?',
         );
     }
 
@@ -50,12 +48,5 @@ class CarrinhoAjuda extends Mailable
     public function attachments(): array
     {
         return [];
-    }
-
-    public function build()
-    {
-        return $this->from('biblioteca@test.com', "Biblioteca")
-            ->to($this->user_email)
-            ->subject("Tem o carrinho à mais de uma hora, precisa de ajuda?");
     }
 }

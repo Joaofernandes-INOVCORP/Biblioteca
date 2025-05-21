@@ -1,6 +1,4 @@
 <x-guest-layout>
-
-
     <ul role="list">
         <li class="py-5">
             <div class="card w-5/6 bg-orange-300 card-md shadow-sm mx-auto">
@@ -48,9 +46,35 @@
                             </form>
                         </div>
                     @endif
+
+
+                    @if (auth()->user()?->isCidadao() && $requisicao->status === "entregue")
+                        @if (!$requisicao->review)
+
+                            <div class="card-actions mt-5">
+                                <h3>Envie a sua review aqui:</h3>
+                                <form method="post" action="{{ route('review.store') }}"
+                                    class="flex flex-col justify-between gap-3 w-full">
+                                    @csrf
+                                    <input type="hidden" name="requisicao_id" value="{{ $requisicao->id }}">
+                                    <label for="pontuacao">
+                                        Pontuação
+                                        <input type="number" name="pontuacao" min="0" max="10" required
+                                            class="ms-3 input input-md bg-orange-100 border border-base-100"
+                                            placeholder="Escreva um numero entre 0 e 10">
+                                    </label>
+                                    <textarea name="comentario"
+                                        class="textarea textarea-ghost w-full focus:bg-orange-100 focus:text-black"
+                                        placeholder="Escreva o que acho"></textarea>
+                                    <button type="submit" class="btn btn-primary">Enviar review</button>
+                                </form>
+                            </div>
+                        @else
+                            <h3>Review já submitida</h3>
+                        @endif
+                    @endif
                 </div>
             </div>
         </li>
-
     </ul>
 </x-guest-layout>

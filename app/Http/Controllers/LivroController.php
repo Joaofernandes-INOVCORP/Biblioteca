@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Editora;
+use App\Models\NotificacaoDisponibilidade;
 use Illuminate\Http\Request;
 use App\Models\Livro;
 use Illuminate\Support\Facades\Http;
@@ -41,8 +42,16 @@ class LivroController extends Controller
         $livro->load(['autores', 'editoras']);
 
         $reqs = $livro->requisicoes()->where("status", "=", "ativa")->count();
- 
-        return view('livros.show', compact('livro', 'reqs'));
+
+        $reqs_with_reviews = $livro->requisicoes()
+            ->where('status', 'entregue')
+            ->whereHas('review', function ($query) {
+                $query->where('estado', 'ativo');
+            })
+            ->with('review')
+            ->get();
+
+        return view('livros.show', compact('livro', 'reqs', 'reqs_with_reviews'));
     }
 
 
@@ -114,6 +123,17 @@ class LivroController extends Controller
             'capa' => $info['imageLinks']['thumbnail'] ?? null,
         ];
     }
+
+    public function notificarDisponivel(Livro $livro)
+    {
+        NotificacaoDisponibilidade::firstOrCreate([
+            'user_id' => auth()->id(),
+            'livro_id' => $livro->id,
+        ]);
+
+        return back()->with('sucesso', 'Serás notificado por email quando o livro estiver disponível para requisição.');
+    }
+
 
     public function edit(string $id)
     {

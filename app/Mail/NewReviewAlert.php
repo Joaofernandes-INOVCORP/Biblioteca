@@ -2,25 +2,27 @@
 
 namespace App\Mail;
 
-use App\Models\Requisicao;
+use App\Models\Review;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class RequisicaoConfirmada extends Mailable
+class NewReviewAlert extends Mailable
 {
     use Queueable, SerializesModels;
+
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public Requisicao $requisicao)
+    public function __construct(public Review $review)
     {
     }
-
 
     /**
      * Get the message envelope.
@@ -28,7 +30,7 @@ class RequisicaoConfirmada extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Requisicao Confirmada',
+            subject: 'New Review Alert',
         );
     }
 
@@ -38,9 +40,9 @@ class RequisicaoConfirmada extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.requisicao.confirmada',
+            markdown: 'emails.review.alertNewReview',
             with: [
-                'requisicao' => $this->requisicao
+                'review' => $this->review
             ]
         );
     }
@@ -54,4 +56,5 @@ class RequisicaoConfirmada extends Mailable
     {
         return [];
     }
+
 }

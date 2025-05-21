@@ -16,7 +16,18 @@ class Requisicao extends Model
         'status',
         'foto_cidadao',
     ];
-    
-    public function livro() { return $this->belongsTo(Livro::class); }
-    public function user()  { return $this->belongsTo(User::class); }
+
+    public function livro()
+    {
+        return $this->belongsTo(Livro::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
 }
