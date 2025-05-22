@@ -37,6 +37,16 @@
                         </div>
                     @endif
 
+
+
+                    @if (session('sucesso'))
+                        <div class="alert alert-success">
+                            <ul>
+                                <li>{{ session()->pull('sucesso') }}</li>
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="mt-6 flex items-center space-x-4">
                         <span class="badge badge-primary text-xl">
                             €{{ number_format($livro->preco, 2, ',', '.') }}
@@ -80,7 +90,6 @@
             </div>
         </div>
         @if ($reqs_with_reviews->count() > 0)
-
             <div class="container flex flex-col gap-3 px-20 pt-5 mx-auto">
                 <h3>Reviews</h3>
                 @foreach ($reqs_with_reviews as $req)
@@ -101,5 +110,40 @@
                 @endforeach
             </div>
         @endif
+
+        <div class="w-3/4 mx-auto mt-5">
+            <h1 class="font-bold text-lg mb-3">Livros semelhantes:</h1>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+                @foreach($recomendacoes as $rec)
+                            <div class="card bg-orange-400 shadow-xl">
+                                <figure class="px-4 pt-4">
+                                    <img src="{{ $rec->capa
+                    ? asset('storage/' . $rec->capa)
+                    : 'https://via.placeholder.com/300x400?text=Sem+Capa' }}" alt="{{ $rec->nome }}"
+                                        class="rounded-lg object-cover h-64 w-full" />
+                                </figure>
+                                <div class="card-body">
+                                    <h2 class="card-title">{{ $rec->nome }}</h2>
+                                    @if($rec->autores->isNotEmpty())
+                                        <p class="text-sm text-gray-600">
+                                            {{ $rec->autores->pluck('nome')->join(', ') }}
+                                        </p>
+                                    @endif
+                                    <p class="text-sm text-gray-600">
+                                        Editora: {{ $rec->editoras->nome }}
+                                    </p>
+                                    <div class="card-actions justify-between items-center mt-4">
+                                        <span class="badge badge-primary text-lg">
+                                            €{{ number_format($rec->preco, 2, ',', '.') }}
+                                        </span>
+                                        <a href="{{ route('livros.show', $rec) }}" class="btn btn-sm btn-primary">
+                                            Ver
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                @endforeach
+            </div>
+        </div>
     </div>
 </x-guest-layout>

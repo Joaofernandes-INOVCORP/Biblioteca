@@ -12,6 +12,7 @@ class Review extends Model
         'estado',
         'pontuacao',
         'comentario',
+        'razao'
     ];
 
     public function user() {

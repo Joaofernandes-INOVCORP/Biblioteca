@@ -53,7 +53,7 @@
 
                             <div class="card-actions mt-5">
                                 <h3>Envie a sua review aqui:</h3>
-                                <form method="post" action="{{ route('review.store') }}"
+                                <form method="post" action="{{ route('reviews.store') }}"
                                     class="flex flex-col justify-between gap-3 w-full">
                                     @csrf
                                     <input type="hidden" name="requisicao_id" value="{{ $requisicao->id }}">

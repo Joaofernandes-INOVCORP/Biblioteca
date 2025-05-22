@@ -43,10 +43,16 @@
         </x-nav-link>
 
         @auth
-        <x-nav-link href="/requisicoes" :active="request()->is('requisicoes')">
-        Requisições
-        </x-nav-link>
-      @endauth
+          <x-nav-link href="/requisicoes" :active="request()->is('requisicoes')">
+            Requisições
+          </x-nav-link>
+        @endauth
+
+        @if (auth()->user()?->isAdmin())
+          <x-nav-link href="/reviews" :active="request()->is('reviews')">
+            Reviews
+          </x-nav-link>
+        @endif
 
     @endif
       </div>

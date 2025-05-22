@@ -16,7 +16,14 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        //
+        $reviews = Review::with('requisicao.livro')->orderByRaw("
+        CASE estado
+                WHEN 'suspenso' THEN 0
+                ELSE 1
+            END
+        ")->get();
+
+        return view('reviews.index', compact('reviews'));
     }
 
     /**
@@ -55,9 +62,9 @@ class ReviewController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Review $review)
     {
-        //
+        return view('reviews.show', compact('review'));
     }
 
     /**
@@ -78,11 +85,15 @@ class ReviewController extends Controller
         $data = $request->validate([
             'estado' => 'required|in:ativo,recusado',
             'justificacao' => 'required_if:estado,recusado'
+        ], [
+            'justificacao.required_if' => 'Ao rejeitar uma review, a justificação é obrigatória!'
         ]);
 
         $review->estado = $data['estado'];
+        $review->razao = $data['justificacao'];
+        $review->save();
 
-        Mail::to($review->user())->send(new ReviewResponse($data, $review));
+        Mail::to($review->user()->get())->send(new ReviewResponse($data, $review));
 
 
         return back();

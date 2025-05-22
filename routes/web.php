@@ -48,12 +48,12 @@ Route::middleware('auth')->group(function () {
           ->only(['index', 'store', 'update', 'delete']);
 
      Route::middleware(IsCidadao::class)
-          ->resource('review', ReviewController::class)
+          ->resource('reviews', ReviewController::class)
           ->only(['store']);
 
      Route::middleware(IsAdmin::class)
-          ->resource('review', ReviewController::class)
-          ->only(['update']);
+          ->resource('reviews', ReviewController::class)
+          ->only(['update', 'index', 'show']);
 
      Route::middleware('auth')->post('/checkout', [CheckoutController::class, 'finalizarPagamento'])->name('checkout');
      Route::middleware('auth')->post('/enviar/', [CheckoutController::class, 'enviado'])->name('encomenda.update');

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('estado', ['suspenso', 'ativo', 'recusado'])->default('suspenso');
             $table->unsignedTinyInteger('pontuacao');
             $table->string('comentario')->nullable();
+            $table->string('razao')->nullable();
         });
     }
 

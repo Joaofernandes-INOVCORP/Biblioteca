@@ -51,7 +51,28 @@ class LivroController extends Controller
             ->with('review')
             ->get();
 
-        return view('livros.show', compact('livro', 'reqs', 'reqs_with_reviews'));
+
+        $livros = Livro::all()->pluck('bibliografia', 'id')->toArray();
+        $vetores = $this->calcularTFIDF($livros);
+
+        $idAtual = $livro->id;
+        $vetorAtual = $vetores[$idAtual];
+
+        $similaridades = [];
+
+        foreach ($vetores as $id => $vetor) {
+            if ($id === $idAtual)
+                continue;
+
+            $sim = $this->similaridadeCosseno($vetorAtual, $vetor);
+            $similaridades[$id] = $sim;
+        }
+
+        arsort($similaridades);
+        $idsMaisSimilares = array_keys(array_slice($similaridades, 0, 6));
+        $recomendacoes = Livro::whereIn('id', $idsMaisSimilares)->get();
+
+        return view('livros.show', compact('livro', 'reqs', 'reqs_with_reviews', 'recomendacoes'));
     }
 
 
@@ -155,6 +176,72 @@ class LivroController extends Controller
     public function export()
     {
         return Excel::download(new LivrosExport, 'livros.csv');
+    }
+
+    //limpeza da string e transformação num array com as palavras -> 'PHP para web' passa para ['php', 'web']
+    protected function tokenize(string $text): array
+    {
+        $text = strtolower(strip_tags($text));
+        $text = preg_replace('/[^\p{L}\p{N}\s]/u', '', $text);
+        $tokens = explode(' ', $text);
+
+        $stopwords = ['de', 'a', 'e', 'o', 'que', 'do', 'da', 'em', 'um', 'para', 'é', 'com', 'não', 'uma', 'os', 'no'];
+        return array_values(array_filter($tokens, fn($t) => strlen($t) > 2 && !in_array($t, $stopwords)));
+    }
+
+    protected function calcularTFIDF(array $documentos): array
+    {
+        $tf = [];
+        $df = [];
+
+        foreach ($documentos as $id => $texto) {
+            $tokens = $this->tokenize($texto);
+            $tf[$id] = array_count_values($tokens);
+
+            foreach (array_unique($tokens) as $termo) {
+                $df[$termo] = ($df[$termo] ?? 0) + 1;
+            }
+        }
+
+        $n = count($documentos);
+        $vetores = [];
+
+        foreach ($tf as $id => $frequencias) {
+            $vetor = [];
+
+            foreach ($df as $termo => $dfCount) {
+                $freqTermo = $frequencias[$termo] ?? 0;
+                $tfidf = $freqTermo * log($n / $dfCount);
+                $vetor[$termo] = $tfidf;
+            }
+
+            $vetores[$id] = $vetor;
+        }
+
+        return $vetores;
+    }
+
+    protected function similaridadeCosseno(array $v1, array $v2): float
+    {
+        $dot = 0.0;
+        $normA = 0.0;
+        $normB = 0.0;
+
+        $todosTermos = array_unique(array_merge(array_keys($v1), array_keys($v2)));
+
+        foreach ($todosTermos as $termo) {
+            $a = $v1[$termo] ?? 0;
+            $b = $v2[$termo] ?? 0;
+
+            $dot += $a * $b;
+            $normA += $a * $a;
+            $normB += $b * $b;
+        }
+
+        if ($normA == 0 || $normB == 0)
+            return 0;
+
+        return $dot / (sqrt($normA) * sqrt($normB));
     }
 
 
