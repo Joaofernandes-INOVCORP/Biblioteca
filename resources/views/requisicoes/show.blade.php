@@ -65,7 +65,7 @@
                                     </label>
                                     <textarea name="comentario"
                                         class="textarea textarea-ghost w-full focus:bg-orange-100 focus:text-black"
-                                        placeholder="Escreva o que acho"></textarea>
+                                        placeholder="Escreva a sua review aqui"></textarea>
                                     <button type="submit" class="btn btn-primary">Enviar review</button>
                                 </form>
                             </div>

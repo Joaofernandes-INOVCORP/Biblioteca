@@ -91,7 +91,7 @@
         </div>
         @if ($reqs_with_reviews->count() > 0)
             <div class="container flex flex-col gap-3 px-20 pt-5 mx-auto">
-                <h3>Reviews</h3>
+                <h3 class="font-bold text-lg">Reviews</h3>
                 @foreach ($reqs_with_reviews as $req)
                     <div class="flex flex-col gap-1 w-full bg-orange-400 rounded-lg p-5">
                         <div class="w-fit">
