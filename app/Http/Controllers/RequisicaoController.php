@@ -86,10 +86,14 @@ class RequisicaoController extends Controller
 
         $admins = User::where('role', 'admin');
 
-        Mail::to(auth()->user())->send(new RequisicaoConfirmada($requisicao, auth()->user()->email));
-        if ($admins->count() > 0)
+        Mail::to(auth()->user())->send(new RequisicaoConfirmada($requisicao));
+        if ($admins->count() > 0){
             Mail::to($admins->get())
                 ->send(new NewRequisitionAlert($requisicao, $admins->pluck('email')->toArray()));
+        }
+
+        //Nota para amanha: Repetir isto nas acoes todas de todos os controllers
+        LogController::registarLog('requisicao', 'criacao', $requisicao->id); 
 
         return redirect()->route('requisicoes.show', $requisicao);
     }
@@ -119,6 +123,7 @@ class RequisicaoController extends Controller
         if ($data["action"] === "finish") {
             $requisicao->data_real_fim = now()->toDateString();
             $requisicao->status = "entregue";
+             LogController::registarLog('requisicao', 'entrega', $requisicao->id);
 
             //enviar email após o livro estar disponivel para os users que pediram para serem notificados
             /*$livro = $requisicao->livro;
@@ -131,6 +136,7 @@ class RequisicaoController extends Controller
 
         } else {
             $requisicao->data_prevista_fim = Carbon::createFromFormat('Y-m-d', $requisicao->data_prevista_fim)->addDays(5)->toDateString();
+                    LogController::registarLog('requisicao', 'extensão da data de entrega', $requisicao->id);
         }
 
         $requisicao->save();

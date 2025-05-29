@@ -52,6 +52,9 @@
           <x-nav-link href="/reviews" :active="request()->is('reviews')">
             Reviews
           </x-nav-link>
+          <x-nav-link href="/logs" :active="request()->is('logs')">
+            Logs
+          </x-nav-link>
         @endif
 
     @endif

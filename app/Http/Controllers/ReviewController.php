@@ -53,6 +53,8 @@ class ReviewController extends Controller
             'comentario' => $data['comentario'],
         ]);
 
+        LogController::registarLog('Review', 'Submetida', $review->id);
+
         Mail::to(User::where('role', '=', 'admin')->get())
             ->send(new NewReviewAlert($review));
 
@@ -92,6 +94,12 @@ class ReviewController extends Controller
         $review->estado = $data['estado'];
         $review->razao = $data['justificacao'];
         $review->save();
+
+        if ($data['estado'] == 'ativo')
+            LogController::registarLog('Review', 'Confirmada', $review->id);
+
+        else
+            LogController::registarLog('Review', 'Recusada', $review->id);
 
         Mail::to($review->user()->get())->send(new ReviewResponse($data, $review));
 

@@ -35,6 +35,8 @@ class CheckoutController extends Controller
             ];
         })->toArray();
 
+        LogController::registarLog('Pagamento', 'Finalização');
+
         return auth()->user()->checkout(
             $products,
             [
@@ -83,6 +85,8 @@ class CheckoutController extends Controller
 
         Cart::destroy($cart->id);
 
+        LogController::registarLog('Compra', 'Confirmada', $enc->id);
+
         return redirect(route('livros.index'));
     }
 
@@ -92,6 +96,8 @@ class CheckoutController extends Controller
         if (!$morada) {
             abort(403);
         }
+
+        LogController::registarLog('Compra', 'Cancelada');
 
         return redirect(route('cart'));
     }

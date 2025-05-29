@@ -114,12 +114,13 @@ class LivroController extends Controller
             'capa' => $capa,
         ]);
 
+        LogController::registarLog('Livro', 'Criação', $livro->id);
+
         return redirect()->route('livros.show', $livro);
     }
 
     public function viaGoogle(int $isbn)
     {
-
 
         $resp = Http::get('https://www.googleapis.com/books/v1/volumes', [
             'q' => 'isbn:' . $isbn,
@@ -152,6 +153,8 @@ class LivroController extends Controller
             'livro_id' => $livro->id,
         ]);
 
+        LogController::registarLog('Livro', 'Notificar Utilizador', $livro->id);
+
         return back()->with('sucesso', 'Serás notificado por email quando o livro estiver disponível para requisição.');
     }
 
@@ -170,11 +173,15 @@ class LivroController extends Controller
     {
         Livro::find($id)->delete();
 
+        LogController::registarLog('Livro', 'Eliminar', $id);
+
         return redirect()->route('livros.index');
     }
 
     public function export()
     {
+        LogController::registarLog('Livro', 'Exportação de dados');
+
         return Excel::download(new LivrosExport, 'livros.csv');
     }
 

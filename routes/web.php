@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LivroController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsCidadao;
@@ -78,4 +79,4 @@ Route::post('/livros/{livro}/notificar-disponivel', [LivroController::class, 'no
      ->middleware('auth')
      ->name('notificar.disponivel');
 
-
+Route::get('/logs', [LogController::class, 'index'])->middleware('auth')->name('logs.index');

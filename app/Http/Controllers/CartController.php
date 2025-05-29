@@ -65,7 +65,10 @@ class CartController extends Controller
                 "livro_id" => $data["livro_id"],
                 'amount' => $data["amount"]
             ]);
-        } else {
+
+            LogController::registarLog('Carrinho', 'Adição de item', $livro->id);
+
+        }  else {
             $item->amount += $data["amount"];
             $item->save();
         }
@@ -135,6 +138,8 @@ class CartController extends Controller
             $item->save();
         }
 
+        LogController::registarLog('Carrinho', 'Alteração da quantidade do item', $livro->id);
+
         return redirect(route("cart.index"));
     }
 
@@ -165,6 +170,8 @@ class CartController extends Controller
 
         $item->destroy();
         $cart->destroy($cart->id);
+
+        LogController::registarLog('Carrinho', 'Remoção de item', $data['livro_id']);
 
         return redirect()->route("home");
     }
