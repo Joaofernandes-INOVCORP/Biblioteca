@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ChatRoom;
 use App\Models\Requisicao;
 use App\Models\User;
 use App\Models\Autor;
@@ -78,5 +79,6 @@ class DatabaseSeeder extends Seeder
 
         $r->save();
 
+        ChatRoom::create(['name' => 'Sala Geral']);
     }
 }

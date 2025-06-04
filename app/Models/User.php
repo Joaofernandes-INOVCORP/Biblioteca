@@ -40,15 +40,18 @@ class User extends Authenticatable
         ];
     }
 
-    public function reviews(){
+    public function reviews()
+    {
         return $this->hasMany(Review::class);
     }
 
-    public function requisicoes(){
+    public function requisicoes()
+    {
         return $this->hasMany(Requisicao::class);
     }
 
-    public function cart(){
+    public function cart()
+    {
         return $this->hasOne(Cart::class);
     }
 
@@ -60,4 +63,21 @@ class User extends Authenticatable
     {
         return $this->role === 'cidadao';
     }
+
+    //Chat rooms stuff
+    public function chatRooms()
+    {
+        return $this->belongsToMany(ChatRoom::class);
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
 }

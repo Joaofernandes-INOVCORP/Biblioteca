@@ -1,9 +1,12 @@
 <?php
 
+use App\Events\SendMessage;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ChatRoomController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LivroController;
 use App\Http\Controllers\LogController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsCidadao;
@@ -56,10 +59,18 @@ Route::middleware('auth')->group(function () {
           ->resource('reviews', ReviewController::class)
           ->only(['update', 'index', 'show']);
 
+     // Checkout
      Route::middleware('auth')->post('/checkout', [CheckoutController::class, 'finalizarPagamento'])->name('checkout');
      Route::middleware('auth')->post('/enviar/', [CheckoutController::class, 'enviado'])->name('encomenda.update');
      Route::middleware('auth')->get('/checkout/sucesso', [CheckoutController::class, 'sucesso'])->name('checkout.sucesso');
      Route::middleware('auth')->get('/checkout/cancelado', [CheckoutController::class, 'cancelado'])->name('checkout.cancelado');
+
+     // Chatrooms
+     Route::resource('chatrooms', ChatRoomController::class);
+
+     // Mensagens
+     Route::post('chatrooms/{chatRoom}/mensagens', [MessageController::class, 'store'])->name('mensagens.store');
+     Route::delete('mensagens/{message}', [MessageController::class, 'destroy'])->name('mensagens.destroy');
 });
 
 
@@ -80,3 +91,7 @@ Route::post('/livros/{livro}/notificar-disponivel', [LivroController::class, 'no
      ->name('notificar.disponivel');
 
 Route::get('/logs', [LogController::class, 'index'])->middleware('auth')->name('logs.index');
+
+Route::get('/test', function () {
+     return event(new SendMessage('hello world'));
+});
