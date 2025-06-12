@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChatRoom extends Model
 {
-    protected $fillable = ['name', 'avatar'];
+    protected $fillable = ['nome', 'avatar'];
 
     public function users()
     {

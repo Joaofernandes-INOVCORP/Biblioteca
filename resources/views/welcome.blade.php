@@ -3,8 +3,8 @@
         Dashboard Page
     </x-slot:heading>
     <script type="module">
-        var channel = Echo.private('my-channel');
-        channel.listen('.my-event', function (data) {
+        var channel = Echo.channel('my-channel');
+        channel.listen('.messageReceive', function (data) {
             console.log(data);
             alert(JSON.stringify(data));
         });

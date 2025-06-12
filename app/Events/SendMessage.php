@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\ChatRoom;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -14,20 +15,17 @@ class SendMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
-
-    public function __construct($message)
+    public function __construct(public string $message, public ChatRoom $chat)
     {
-        $this->message = $message;
     }
 
     public function broadcastOn()
     {
-        return new Channel('my-channel');
+        return new PrivateChannel('chat_' . $this->chat->name);
     }
 
     public function broadcastAs()
     {
-        return 'my-event';
+        return 'messageReceive';
     }
 }

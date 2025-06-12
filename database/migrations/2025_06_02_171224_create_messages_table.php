@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->text('body');
+            $table->text('conteudo');
             $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('chat_room_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('receiver_id')->nullable()->constrained('users')->onDelete('cascade');

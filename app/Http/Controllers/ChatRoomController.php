@@ -36,6 +36,7 @@ class ChatRoomController extends Controller
             'utilizadores.*' => 'exists:users,id',
         ]);
 
+
         $avatar = $request->file('avatar')?->store('chat_avatars', 'public');
 
         $sala = ChatRoom::create([
@@ -50,11 +51,12 @@ class ChatRoomController extends Controller
         return redirect()->route('chatrooms.index')->with('sucesso', 'Sala criada com sucesso.');
     }
 
-    public function show(ChatRoom $chatRoom)
+    public function show(string $id)
     {
+        $chatRoom = ChatRoom::findOrFail($id);
         abort_if(!$chatRoom->users->contains(Auth::id()), 403);
 
-        $chatRoom->load('messages.user');
+        $chatRoom->load('messages.sender');
 
         return view('chatrooms.show', compact('chatRoom'));
     }

@@ -66,7 +66,9 @@ Route::middleware('auth')->group(function () {
      Route::middleware('auth')->get('/checkout/cancelado', [CheckoutController::class, 'cancelado'])->name('checkout.cancelado');
 
      // Chatrooms
-     Route::resource('chatrooms', ChatRoomController::class);
+     Route::resource('chatrooms', ChatRoomController::class);/*->only(['index', 'show', 'create']);
+     Route::middleware(IsAdmin::class)
+          ->resource('chatrooms', ChatRoomController::class)->except(['index', 'show', 'create']);*/
 
      // Mensagens
      Route::post('chatrooms/{chatRoom}/mensagens', [MessageController::class, 'store'])->name('mensagens.store');
@@ -93,5 +95,7 @@ Route::post('/livros/{livro}/notificar-disponivel', [LivroController::class, 'no
 Route::get('/logs', [LogController::class, 'index'])->middleware('auth')->name('logs.index');
 
 Route::get('/test', function () {
-     return event(new SendMessage('hello world'));
+     event(new SendMessage(['a' => 'test', 'msg' => 'blabla']));
+
+     return ['msg' => 'sent'];
 });

@@ -79,6 +79,6 @@ class DatabaseSeeder extends Seeder
 
         $r->save();
 
-        ChatRoom::create(['name' => 'Sala Geral']);
+        ChatRoom::create(['nome' => 'Sala Geral']);
     }
 }
